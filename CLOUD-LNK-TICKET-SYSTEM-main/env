@@ -1,0 +1,24 @@
+# 1. Supabase PostgreSQL (Transaction Pooler on 6543 + Direct Session Pooler on 5432)
+DATABASE_URL="postgresql://postgres.qlwjasvrplvjjvxvacke:LNKmisADMIN!@aws-0-ap-southeast-2.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=25&pool_timeout=20"
+DIRECT_URL="postgresql://postgres.qlwjasvrplvjjvxvacke:LNKmisADMIN!@aws-0-ap-southeast-2.pooler.supabase.com:5432/postgres"
+
+# 2. Portable Storage Provider ("GOOGLE_DRIVE" for Cloud, "LOCAL" for On-Premise Server)
+STORAGE_PROVIDER="GOOGLE_DRIVE"
+
+# 3. Google Workspace Drive Apps Script Bridge
+GOOGLE_DRIVE_BRIDGE_URL="https://script.google.com/macros/s/AKfycbz7nrzZThPFTGafBja66KxUijkOIjtMc39IcRfwfPg-NR4O57gPTkQns5OBm4cSMnsy-Q/exec"
+GOOGLE_DRIVE_BRIDGE_TOKEN="lk-drive-bridge-secret-2026"
+CRON_SECRET="lk-drive-bridge-secret-2026"
+
+# 4. Google Drive Folder URLs / IDs
+GOOGLE_DRIVE_ATTACHMENTS_FOLDER_ID="https://drive.google.com/drive/folders/1ZJK8oCnqWdP7KC8M2YRzc-5l4WEBVy2x?usp=sharing"
+GOOGLE_DRIVE_BACKUPS_FOLDER_ID="https://drive.google.com/drive/folders/1q7B4f-vS9SJ14nlQWSMpeu6KQ5DHQ1qX?usp=sharing"
+
+# 5. Local SQLite Directory for Fallback & Historical Data Portability
+LOCAL_SQLITE_PATH="C:\\Users\\MIS\\Documents\\GitHub\\CLOUD-LNK-TICKET-SYSTEM\\data"
+
+# OpenCode / OpenAI-Compatible API Configuration
+OPENCODE_API_URL="https://api.openai.com/v1/chat/completions"
+OPENCODE_API_KEY="your-api-key-here"
+OPENCODE_MODEL="gpt-4o-mini"
+JWT_SECRET="lnk_enterprise_secure_token_secret_f8b1c4e2a9d6"

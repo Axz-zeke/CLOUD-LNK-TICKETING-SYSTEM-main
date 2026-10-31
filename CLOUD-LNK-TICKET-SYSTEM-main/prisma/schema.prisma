@@ -1,0 +1,427 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["relationJoins"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum GlobalRole {
+  SUPERADMIN
+  ADMIN
+  EMPLOYEE
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SpaceRole {
+  MEMBER
+  ADMIN
+}
+
+model User {
+  id           String      @id @default(cuid())
+  username     String      @unique
+  email        String      @unique
+  name         String
+  passwordHash String
+  globalRole   GlobalRole  @default(EMPLOYEE)
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  // Relationships
+  spaceMemberships SpaceMember[]
+  headedSpaces     Space[]       @relation("DepartmentHead")
+  createdTasks     Task[]        @relation("CreatedTasks")
+  assignedTasks    Task[]        @relation("AssignedTasks")
+  contributedTasks Task[]        @relation("TaskContributors")
+  taskHistories    TaskHistory[] @relation("ActorTaskHistory")
+  comments         TaskComment[]
+  attachments      Attachment[]
+  uploadedAttachments TaskAttachment[]
+  auditLogs        AuditLog[]
+  sessions         Session[]
+  notifications    Notification[]
+  preference       UserPreference?
+
+  @@index([globalRole])
+  @@index([username])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+model Workspace {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  spaces    Space[]
+}
+
+model Space {
+  id          String        @id @default(cuid())
+  workspaceId String
+  name        String
+  slug        String
+  key         String        // Prefix for tickets e.g. "MIS", "ACC", "HR"
+  description      String?
+  departmentHeadId String?
+  departmentHead   User?         @relation("DepartmentHead", fields: [departmentHeadId], references: [id], onDelete: SetNull)
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  members     SpaceMember[]
+  lists       List[]
+  statuses    TaskStatus[]
+  tasks              Task[]
+  originTasks        Task[]        @relation("OriginSpaceTasks")
+  slaPolicy          SlaPolicy?
+  fromSpaceHistories TaskHistory[] @relation("FromSpaceHistory")
+  toSpaceHistories   TaskHistory[] @relation("ToSpaceHistory")
+  customFields       CustomFieldDefinition[]
+  ticketTemplates    TicketTemplate[]
+
+  @@unique([workspaceId, slug])
+  @@unique([workspaceId, key])
+  @@index([workspaceId])
+  @@index([departmentHeadId])
+}
+
+model SpaceMember {
+  id        String    @id @default(cuid())
+  spaceId   String
+  userId    String
+  role      SpaceRole @default(MEMBER)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([spaceId, userId])
+  @@index([userId])
+  @@index([spaceId])
+}
+
+model List {
+  id          String   @id @default(cuid())
+  spaceId     String
+  name        String
+  description String?
+  color       String?  // Optional hex or Tailwind badge color
+  order       Int      @default(0)
+  isPrivate   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  space       Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+  customFields CustomFieldDefinition[]
+
+  @@unique([spaceId, name])
+  @@index([spaceId])
+}
+
+model TaskStatus {
+  id          String   @id @default(cuid())
+  spaceId     String
+  name        String
+  color       String   @default("#6B7280") // Hex color code
+  order       Int      @default(0)
+  isCompleted Boolean  @default(false)
+  isClosed    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  space       Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@unique([spaceId, name])
+  @@index([spaceId])
+}
+
+model Task {
+  id           String        @id @default(cuid())
+  taskKey      String        @unique // e.g. "MIS-101"
+  title        String
+  description  String?
+  priority     Priority      @default(NORMAL)
+  statusId     String
+  listId       String
+  spaceId      String
+  originSpaceId String?
+  assigneeId   String?
+  createdById  String
+  customFields String        @default("{}") // JSON string for dynamic custom fields
+  startDate    DateTime?     // Planned start date (falls back to createdAt if null)
+  dueDate      DateTime?     // Planned end/target date (falls back to slaDueAt or startDate + 3d if null)
+  isMilestone  Boolean       @default(false) // Renders as a diamond milestone marker on Gantt
+  dependsOnIds String?       // JSON-serialized array of prerequisite Task IDs, e.g. '["task_id_1"]'
+  progress     Int           @default(0)     // 0-100 manual or checklist-derived completion %
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  status       TaskStatus    @relation(fields: [statusId], references: [id])
+  list         List          @relation(fields: [listId], references: [id], onDelete: Cascade)
+  space        Space         @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  originSpace  Space?        @relation("OriginSpaceTasks", fields: [originSpaceId], references: [id], onDelete: SetNull)
+  assignee     User?         @relation("AssignedTasks", fields: [assigneeId], references: [id], onDelete: SetNull)
+  createdBy    User          @relation("CreatedTasks", fields: [createdById], references: [id], onDelete: Cascade)
+  comments          TaskComment[]
+  legacyAttachments Attachment[]     @relation("LegacyTaskAttachments")
+  attachments       TaskAttachment[]
+  checklistItems    TaskChecklistItem[]
+  notifications     Notification[]
+  contributors      User[]         @relation("TaskContributors")
+  history           TaskHistory[]
+  customFieldValues TaskCustomFieldValue[]
+
+  @@index([spaceId])
+  @@index([originSpaceId])
+  @@index([listId])
+  @@index([statusId])
+  @@index([createdById])
+  @@index([assigneeId])
+  @@index([createdAt])
+  @@index([spaceId, createdAt])
+  @@index([spaceId, statusId, createdAt])
+  @@index([originSpaceId, createdAt])
+  @@index([createdById, createdAt])
+  @@index([priority])
+  @@index([startDate])
+  @@index([dueDate])
+  @@index([isMilestone])
+}
+
+model TaskComment {
+  id              String   @id @default(cuid())
+  taskId          String
+  authorId        String
+  content         String
+  isInternal      Boolean  @default(false) // True for staff-only internal notes
+  attachmentsJson String?  // JSON string containing array of inline comment attachments
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  task            Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  author          User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([authorId])
+  @@index([isInternal])
+  @@index([taskId, createdAt])
+}
+
+model Attachment {
+  id         String   @id @default(cuid())
+  taskId     String
+  uploaderId String
+  filename   String
+  filepath   String   // Relative path in ./uploads
+  size       Int      // Size in bytes
+  mimeType   String
+  createdAt  DateTime @default(now())
+
+  task       Task     @relation("LegacyTaskAttachments", fields: [taskId], references: [id], onDelete: Cascade)
+  uploader   User     @relation(fields: [uploaderId], references: [id], onDelete: Cascade)
+
+  @@index([taskId])
+  @@index([uploaderId])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  event        String   // e.g. "UNAUTHORIZED_ACCESS_ATTEMPT", "PERMISSION_GRANTED"
+  userId       String?
+  resourceType String   // e.g. "Task", "Space", "User"
+  resourceId   String?
+  ipAddress    String?
+  details      String?  // JSON or text description of the security event
+  createdAt    DateTime @default(now())
+
+  user         User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([event])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id
+  userId    String
+  taskId    String?
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task      Task?    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([userId, isRead])
+  @@index([userId, isRead, createdAt])
+  @@index([taskId])
+}
+
+model SlaPolicy {
+  id            String   @id @default(cuid())
+  spaceId       String   @unique
+  space         Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  urgentHours   Int      @default(4)    // 4 hours
+  highHours     Int      @default(24)   // 1 business day (24h)
+  normalHours   Int      @default(72)   // 3 business days (72h)
+  lowHours      Int      @default(120)  // 5 business days (120h)
+  updatedAt     DateTime @updatedAt
+  createdAt     DateTime @default(now())
+}
+
+model UserPreference {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  theme           String   @default("dark")   // "dark" | "light" | "system"
+  boardDensity    Int      @default(5)       // Columns to display (3, 4, 5, or 6)
+  compactCards    Boolean  @default(false)   // Ultra-compact card view
+  enableSound     Boolean  @default(true)    // Sound chime on new assignment / status
+  notifyOnAssign  Boolean  @default(true)    // SSE notification on assignment
+  notifyOnStatus  Boolean  @default(true)    // SSE notification on ticket status change
+  hasCompletedTour Boolean @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model SystemSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  updatedAt DateTime @updatedAt
+  updatedBy String?
+}
+
+model TaskHistory {
+  id            String   @id @default(cuid())
+  taskId        String
+  task          Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  actorId       String?
+  actor         User?    @relation("ActorTaskHistory", fields: [actorId], references: [id], onDelete: SetNull)
+  actionType    String   // "HANDOFF_TRANSFER", "STATUS_CHANGE", "CLOSED", "REOPENED"
+  fromSpaceId   String?
+  fromSpace     Space?   @relation("FromSpaceHistory", fields: [fromSpaceId], references: [id], onDelete: SetNull)
+  toSpaceId     String?
+  toSpace       Space?   @relation("ToSpaceHistory", fields: [toSpaceId], references: [id], onDelete: SetNull)
+  fromQueueName String?
+  toQueueName   String?
+  notes         String?  // Optional hand-off notes or quotation handover remarks
+  createdAt     DateTime @default(now())
+
+  @@index([taskId, createdAt])
+  @@index([actorId])
+  @@index([fromSpaceId])
+  @@index([toSpaceId])
+  @@index([actionType])
+}
+
+model CustomFieldDefinition {
+  id          String                 @id @default(cuid())
+  spaceId     String
+  space       Space                  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  listId      String?   // null = Applies to ALL Queue Lists in this Department Space
+  list        List?     @relation(fields: [listId], references: [id], onDelete: Cascade)
+  name        String                 // e.g., "Asset ID", "Estimated Cost", "Request Type"
+  fieldType   String                 // "TEXT" | "NUMBER" | "CURRENCY" | "SELECT" | "DATE"
+  options     String?                // JSON-serialized string array for SELECT options, e.g. '["Laptop","Monitor","VPN"]'
+  isRequired  Boolean                @default(false)
+  order       Int                    @default(0)
+  createdAt   DateTime               @default(now())
+  values      TaskCustomFieldValue[]
+
+  @@unique([spaceId, name])
+  @@index([spaceId])
+  @@index([listId])
+}
+
+model TaskCustomFieldValue {
+  id            String                @id @default(cuid())
+  taskId        String
+  task          Task                  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  fieldId       String
+  field         CustomFieldDefinition @relation(fields: [fieldId], references: [id], onDelete: Cascade)
+  value         String                // Stored as string; formatted/validated by fieldType
+  updatedAt     DateTime              @updatedAt
+
+  @@unique([taskId, fieldId])
+  @@index([taskId])
+  @@index([fieldId])
+}
+
+model TaskChecklistItem {
+  id            String    @id @default(cuid())
+  taskId        String
+  task          Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  title         String
+  isCompleted   Boolean   @default(false)
+  completedById String?
+  completedAt   DateTime?
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([taskId])
+}
+
+model TaskAttachment {
+  id           String   @id @default(cuid())
+  taskId       String
+  task         Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  fileName     String
+  fileUrl      String   // e.g., "/uploads/tasks/<taskId>/<timestamp>-<sanitizedFileName>"
+  fileType     String   // MIME type, e.g., "image/png", "application/pdf"
+  fileSize     Int      // File size in bytes
+  uploadedById String
+  uploadedBy   User     @relation(fields: [uploadedById], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+
+  @@index([taskId])
+  @@index([uploadedById])
+}
+
+model TicketTemplate {
+  id                  String   @id @default(cuid())
+  spaceId             String
+  space               Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  name                String   // e.g., "Workstation & VPN Provisioning", "Purchase Requisition"
+  titlePrefix         String?  // e.g., "[Provisioning] "
+  defaultPriority     String   @default("NORMAL")
+  descriptionTemplate String   // Structured markdown/text prompt for the requester
+  defaultChecklist    String?  // JSON-serialized string array of default checklist step titles
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@unique([spaceId, name])
+  @@index([spaceId])
+}
+

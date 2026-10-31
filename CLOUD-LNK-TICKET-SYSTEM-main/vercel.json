@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "crons": [
+    {
+      "path": "/api/admin/backup/cron",
+      "schedule": "0 16 * * *"
+    }
+  ],
+  "functions": {
+    "src/app/api/admin/**": {
+      "maxDuration": 60
+    },
+    "src/app/api/attachments/**": {
+      "maxDuration": 60
+    },
+    "src/app/api/tasks/**": {
+      "maxDuration": 60
+    }
+  }
+}

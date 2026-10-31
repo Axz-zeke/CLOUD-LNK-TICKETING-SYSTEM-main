@@ -1,0 +1,31 @@
+{
+  "enabled": true,
+  "retentionCount": 5,
+  "autoOptimizeWal": true,
+  "schedules": [
+    {
+      "id": "sched_mvivtism_2bf442",
+      "label": "Midday Backup (12:00 PM)",
+      "enabled": true,
+      "frequency": "DAILY",
+      "timeOfDay": "12:00",
+      "lastRunAt": "2026-10-26T01:15:13.995Z",
+      "lastRunStatus": "SUCCESS",
+      "nextRunAt": "2026-10-31T04:00:00.000Z",
+      "lastRunDurationMs": 19523
+    },
+    {
+      "id": "sched_mvivtith_91cc1b",
+      "label": "Midnight Backup (12:00 AM)",
+      "enabled": true,
+      "frequency": "DAILY",
+      "timeOfDay": "00:00",
+      "lastRunAt": "2026-10-26T01:15:36.456Z",
+      "lastRunStatus": "SUCCESS",
+      "nextRunAt": "2026-10-30T16:00:00.000Z",
+      "lastRunDurationMs": 19560
+    }
+  ],
+  "lastRunAt": "2026-10-26T01:15:36.456Z",
+  "nextRunAt": "2026-10-30T16:00:00.000Z"
+}

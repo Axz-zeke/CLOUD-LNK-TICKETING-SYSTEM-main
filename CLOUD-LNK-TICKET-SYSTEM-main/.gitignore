@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production Build
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment Variables & Secrets
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production
+.env.production.local
+
+# Databases & SQLite Storage
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+
+# File Uploads & Local Attachment Storage (Keep directory structure with .gitkeep)
+uploads/*
+!uploads/.gitkeep
+public/uploads/*
+!public/uploads/.gitkeep
+
+# Hot Backups (Keep directory structure with .gitkeep)
+backups/*
+!backups/.gitkeep
+
+# Temporary Directories, Scratch, & Vercel
+scratch/
+state/
+.vercel
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS Files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,809 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Goldilocks Daylight Satin Ice Light Mode Color Tokens */
+    --background: 216 33% 92%;       /* #E2E8F2 - Airy Cool-Slate Canvas */
+    --foreground: 222 47% 11%;       /* #0F172A - Deep Navy Slate Primary Text */
+    --card: 214 42% 96%;             /* #F0F4FA - Crisp Satin Ice Card / Row Surface */
+    --card-foreground: 222 47% 11%;  /* #0F172A */
+    --popover: 214 42% 96%;          /* #F0F4FA - Crisp Satin Ice Popover */
+    --popover-foreground: 222 47% 11%;
+    --primary: 221 83% 53%;          /* #2563EB - Royal Blue Accent */
+    --primary-foreground: 0 0% 100%; /* #FFFFFF */
+    --secondary: 214 36% 93%;        /* #E5ECF6 - Inner Sub-boxes & Form Inputs */
+    --secondary-foreground: 222 47% 11%;
+    --muted: 214 32% 89%;            /* #D8E1EE - Recessed Column Tracks */
+    --muted-foreground: 215 20% 36%; /* #475569 - Secondary / Helper Text */
+    --accent: 214 62% 90%;           /* #D6E4F7 - Active Blue-Slate Pill */
+    --accent-foreground: 224 76% 33%;/* #1E3A8A - Deep Navy Brand Blue */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 214 32% 84%;           /* #C8D5E6 - Crisp Slate-Blue Border */
+    --input: 214 32% 83%;            /* #C4D2E4 - Input Border */
+    --ring: 221 83% 53%;             /* #2563EB - Focus Ring */
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  *:hover {
+    scrollbar-color: rgba(113, 113, 122, 0.25) transparent;
+  }
+  .dark *:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* WebKit / Chromium - Instant Show / Hide */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: transparent;
+    border-radius: 9999px;
+    transition: none !important;
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  *:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(113, 113, 122, 0.25);
+  }
+
+  *:hover::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(113, 113, 122, 0.55);
+  }
+
+  /* Dark Mode - Instant Swap */
+  .dark *::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  .dark *:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .dark *:hover::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.35);
+  }
+}
+
+@layer utilities {
+  /* Utility Classes - Instant Toggle */
+  .hover-scrollbar,
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+    transition: none !important;
+  }
+
+  .hover-scrollbar:hover,
+  .custom-scrollbar:hover {
+    scrollbar-color: rgba(113, 113, 122, 0.25) transparent;
+  }
+
+  .dark .hover-scrollbar:hover,
+  .dark .custom-scrollbar:hover {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+  }
+}
+
+/* ==========================================================================
+   Executive Report Print Stylesheet & Client-Side PDF Export Styling
+   ========================================================================== */
+
+/* Dedicated PDF Export Mode for client-side html2pdf / canvas */
+#report-printable-content.report-pdf-export-mode {
+  background: #ffffff !important;
+  color: #111827 !important;
+  padding: 24px !important;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+#report-printable-content.report-pdf-export-mode * {
+  color: #111827 !important;
+  border-color: #e2e8f0 !important;
+}
+
+#report-printable-content.report-pdf-export-mode h1,
+#report-printable-content.report-pdf-export-mode h2,
+#report-printable-content.report-pdf-export-mode h3,
+#report-printable-content.report-pdf-export-mode h4 {
+  color: #0f172a !important;
+  page-break-after: avoid;
+}
+
+#report-printable-content.report-pdf-export-mode table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 16px 0 !important;
+  page-break-inside: avoid;
+  background-color: #ffffff !important;
+}
+
+#report-printable-content.report-pdf-export-mode th {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 12px !important;
+  font-weight: 600 !important;
+}
+
+#report-printable-content.report-pdf-export-mode td {
+  border: 1px solid #e2e8f0 !important;
+  padding: 8px 12px !important;
+  color: #1e293b !important;
+  background-color: #ffffff !important;
+}
+
+#report-printable-content.report-pdf-export-mode pre,
+#report-printable-content.report-pdf-export-mode code {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+#report-printable-content.report-pdf-export-mode hr {
+  border-color: #e2e8f0 !important;
+}
+
+#report-printable-content.report-pdf-export-mode .executive-print-header {
+  display: block !important;
+  border-color: #0f172a !important;
+}
+
+#report-printable-content.report-pdf-export-mode .report-section {
+  page-break-inside: avoid;
+  margin-bottom: 20px;
+}
+
+/* Print Media Stylesheet */
+@media print {
+  /* Prevent modal containers from clipping multi-page printouts */
+  html, body {
+    background: #ffffff !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .print-modal-overlay,
+  .print-modal-container,
+  .print-modal-scroll {
+    position: static !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Hide everything except the report content */
+  body * {
+    visibility: hidden;
+  }
+
+  #report-printable-content,
+  #report-printable-content * {
+    visibility: visible;
+  }
+
+  #report-printable-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: #ffffff !important;
+    color: #111827 !important; /* Rich slate black */
+    padding: 24px;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  /* Ensure headers, tables, and borders are crisp */
+  h1, h2, h3, h4 {
+    color: #0f172a !important;
+    page-break-after: avoid;
+  }
+
+  table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 16px 0 !important;
+    page-break-inside: avoid;
+  }
+
+  th, td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 8px 12px !important;
+    color: #1e293b !important;
+    background: transparent !important;
+  }
+
+  th {
+    background-color: #f8fafc !important;
+    font-weight: 600;
+  }
+
+  /* Prevent bad page splits */
+  .report-section {
+    page-break-inside: avoid;
+    margin-bottom: 20px;
+  }
+
+  .executive-print-header {
+    display: block !important;
+    border-bottom: 2px solid #0f172a !important;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Theme-aware native date pickers */
+html.dark input[type="date"] {
+  color-scheme: dark;
+}
+html:not(.dark) input[type="date"],
+html.light input[type="date"] {
+  color-scheme: light;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(65%) sepia(60%) saturate(2500%) hue-rotate(210deg) brightness(105%) contrast(95%);
+  cursor: pointer;
+  opacity: 0.9;
+}
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* ==========================================================================
+   GOLDILOCKS DAYLIGHT SATIN ICE LIGHT MODE DESIGN SYSTEM
+   Airy daylight balance (~92%–96% luminance) with zero harsh #FFFFFF backlight glare:
+   - Tier 1: Main Workspace Canvas: #E2E8F2
+   - Tier 2: Recessed Column Wells & Tracks: #D8E1EE with border #C4D1E2
+   - Tier 3: Elevated Cards, Sidebar, Header, Modals, Drawers: #F0F4FA (Nav #EAF0F8) with border #C8D5E6
+   - Tier 4: Inner Card Sub-boxes, Micro-pills, & Form Inputs: #E5ECF6 with border #CBD7E8
+   Strictly scoped to html:not(.dark) & html.light so Dark Mode stays 100% intact.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Primary Canvas Background (#E2E8F2 - Airy Daylight Cool-Slate Canvas)
+   -------------------------------------------------------------------------- */
+html:not(.dark) body,
+html.light body,
+html:not(.dark) main,
+html.light main {
+  background-color: #E2E8F2 !important;
+  color: #0F172A !important;
+}
+
+/* --------------------------------------------------------------------------
+   2. Soft Slate Navigation (#EAF0F8) & Elevated Surfaces (#F0F4FA Satin Ice)
+   -------------------------------------------------------------------------- */
+html:not(.dark) aside,
+html.light aside,
+html:not(.dark) header,
+html.light header,
+html:not(.dark) .gantt-calendar-header,
+html.light .gantt-calendar-header {
+  background-color: #EAF0F8 !important;
+  border-color: #C8D5E6 !important;
+}
+
+html:not(.dark) aside .border-b,
+html.light aside .border-b,
+html:not(.dark) header .border-b,
+html.light header .border-b,
+html:not(.dark) aside .border-r,
+html.light aside .border-r {
+  border-color: #C8D5E6 !important;
+}
+
+/* Elevated Cards, Modals, Drawers, Popovers (#F0F4FA Crisp Satin Ice) */
+html:not(.dark) .bg-white,
+html.light .bg-white,
+html:not(.dark) .bg-\[\#F6F9FC\],
+html.light .bg-\[\#F6F9FC\],
+html:not(.dark) .bg-\[\#F5F8FC\],
+html.light .bg-\[\#F5F8FC\],
+html:not(.dark) .bg-white\/90,
+html.light .bg-white\/90,
+html:not(.dark) .bg-white\/95,
+html.light .bg-white\/95,
+html:not(.dark) .bg-zinc-900,
+html.light .bg-zinc-900,
+html:not(.dark) .bg-zinc-900\/95,
+html.light .bg-zinc-900\/95,
+html:not(.dark) .bg-zinc-900\/90,
+html.light .bg-zinc-900\/90,
+html:not(.dark) .bg-zinc-900\/80,
+html.light .bg-zinc-900\/80,
+html:not(.dark) .bg-\[\#14171F\],
+html.light .bg-\[\#14171F\],
+html:not(.dark) .bg-\[\#12151E\],
+html.light .bg-\[\#12151E\] {
+  background-color: #F0F4FA !important;
+  border-color: #C8D5E6 !important;
+}
+
+/* --------------------------------------------------------------------------
+   3. Secondary / Muted Containers (Subtask boxes, Footers, Empty states: #E6EEF8)
+   -------------------------------------------------------------------------- */
+html:not(.dark) .bg-slate-50,
+html.light .bg-slate-50,
+html:not(.dark) .bg-\[\#EDF2F9\],
+html.light .bg-\[\#EDF2F9\],
+html:not(.dark) .bg-slate-50\/80,
+html.light .bg-slate-50\/80,
+html:not(.dark) .bg-slate-50\/90,
+html.light .bg-slate-50\/90,
+html:not(.dark) .bg-zinc-950,
+html.light .bg-zinc-950,
+html:not(.dark) .bg-zinc-950\/90,
+html.light .bg-zinc-950\/90,
+html:not(.dark) .bg-zinc-950\/80,
+html.light .bg-zinc-950\/80,
+html:not(.dark) .bg-zinc-950\/70,
+html.light .bg-zinc-950\/70,
+html:not(.dark) .bg-zinc-950\/60,
+html.light .bg-zinc-950\/60,
+html:not(.dark) .bg-zinc-950\/50,
+html.light .bg-zinc-950\/50,
+html:not(.dark) .bg-zinc-950\/40,
+html.light .bg-zinc-950\/40,
+html:not(.dark) .bg-zinc-950\/30,
+html.light .bg-zinc-950\/30,
+html:not(.dark) .bg-zinc-900\/70,
+html.light .bg-zinc-900\/70,
+html:not(.dark) .bg-zinc-900\/60,
+html.light .bg-zinc-900\/60,
+html:not(.dark) .bg-zinc-900\/50,
+html.light .bg-zinc-900\/50,
+html:not(.dark) .bg-zinc-900\/40,
+html.light .bg-zinc-900\/40,
+html:not(.dark) .bg-zinc-900\/30,
+html.light .bg-zinc-900\/30,
+html:not(.dark) .bg-neutral-800,
+html.light .bg-neutral-800,
+html:not(.dark) .bg-neutral-700,
+html.light .bg-neutral-700 {
+  background-color: #E6EEF8 !important;
+  border-color: #C8D5E6 !important;
+  color: #0F172A !important;
+}
+
+/* Kanban Columns, Table Headers & Recessed Tracks (#D8E1EE / #DCE5F2 with border #C4D1E2) */
+html:not(.dark) thead,
+html.light thead,
+html:not(.dark) thead tr,
+html.light thead tr,
+html:not(.dark) thead th,
+html.light thead th,
+html:not(.dark) .bg-slate-100,
+html.light .bg-slate-100,
+html:not(.dark) .bg-\[\#DFE7F2\],
+html.light .bg-\[\#DFE7F2\],
+html:not(.dark) .bg-slate-100\/70,
+html.light .bg-slate-100\/70,
+html:not(.dark) .bg-slate-100\/80,
+html.light .bg-slate-100\/80,
+html:not(.dark) .bg-slate-100\/90,
+html.light .bg-slate-100\/90,
+html:not(.dark) .bg-zinc-800,
+html.light .bg-zinc-800,
+html:not(.dark) .bg-zinc-800\/80,
+html.light .bg-zinc-800\/80,
+html:not(.dark) .bg-zinc-800\/60,
+html.light .bg-zinc-800\/60 {
+  background-color: #DCE5F2 !important;
+  border-color: #C4D1E2 !important;
+  color: #0F172A !important;
+}
+
+html:not(.dark) thead th,
+html.light thead th {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+/* Sidebar Active Nav Item / Pill (#D6E4F7 with #1E3A8A text & #ADC8EC border) */
+html:not(.dark) aside button.bg-slate-100,
+html.light aside button.bg-slate-100,
+html:not(.dark) aside a.bg-slate-100,
+html.light aside a.bg-slate-100,
+html:not(.dark) aside button.bg-blue-50,
+html.light aside button.bg-blue-50,
+html:not(.dark) aside div.bg-slate-100,
+html.light aside div.bg-slate-100,
+html:not(.dark) aside div.bg-blue-50,
+html.light aside div.bg-blue-50,
+html:not(.dark) aside [data-active="true"],
+html.light aside [data-active="true"] {
+  background-color: #D6E4F7 !important;
+  color: #1E3A8A !important;
+  border: 1px solid #ADC8EC !important;
+  box-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+/* Sidebar Inactive Nav Hover (#DEE8F4) */
+html:not(.dark) aside button:hover:not(.bg-blue-50):not(.bg-slate-100),
+html.light aside button:hover:not(.bg-blue-50):not(.bg-slate-100),
+html:not(.dark) aside a:hover:not(.bg-red-100\/70),
+html.light aside a:hover:not(.bg-red-100\/70) {
+  background-color: #DEE8F4 !important;
+}
+
+/* Sidebar "Admin Panel" Button in Light Mode: Soft Muted Slate-Rose */
+html:not(.dark) aside a[href="/admin/users"],
+html.light aside a[href="/admin/users"] {
+  background-color: #F3E4EB !important;
+  color: #881337 !important;
+  border: 1px solid #E4C8D5 !important;
+}
+html:not(.dark) aside a[href="/admin/users"] *,
+html.light aside a[href="/admin/users"] * {
+  color: #881337 !important;
+}
+
+/* Header View Switcher Track (#D8E1EE with border #C4D1E2) */
+html:not(.dark) [data-tour="view-toggle"],
+html.light [data-tour="view-toggle"] {
+  background-color: #D8E1EE !important;
+  border-color: #C4D1E2 !important;
+}
+
+/* Header Active View Button (#F0F4FA with #1D4ED8 text & #ADC8EC border) */
+html:not(.dark) [data-tour="view-toggle"] button.bg-white,
+html.light [data-tour="view-toggle"] button.bg-white {
+  background-color: #F0F4FA !important;
+  color: #1D4ED8 !important;
+  border-color: #ADC8EC !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* Header Buttons: Theme Toggle & Notification Bell */
+html:not(.dark) header button[aria-label="Toggle workspace theme"],
+html.light header button[aria-label="Toggle workspace theme"],
+html:not(.dark) header button[aria-label="Notifications"],
+html.light header button[aria-label="Notifications"] {
+  background-color: #F3F6FB !important;
+  border-color: #C4D2E4 !important;
+  color: #334155 !important;
+}
+
+html:not(.dark) header button[aria-label="Toggle workspace theme"]:hover,
+html.light header button[aria-label="Toggle workspace theme"]:hover,
+html:not(.dark) header button[aria-label="Notifications"]:hover,
+html.light header button[aria-label="Notifications"]:hover {
+  background-color: #D6E4F7 !important;
+  border-color: #ADC8EC !important;
+  color: #1E3A8A !important;
+}
+
+/* Elevated Hover States (#F5F8FD) */
+html:not(.dark) tr:hover,
+html.light tr:hover,
+html:not(.dark) tbody tr:hover,
+html.light tbody tr:hover,
+html:not(.dark) .hover\:bg-slate-50\/80:hover,
+html.light .hover\:bg-slate-50\/80:hover,
+html:not(.dark) .hover\:bg-slate-100:hover,
+html.light .hover\:bg-slate-100:hover {
+  background-color: #F5F8FD !important;
+}
+
+html:not(.dark) [draggable="true"]:hover,
+html.light [draggable="true"]:hover {
+  background-color: #F5F8FD !important;
+  border-color: #3B82F6 !important;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08) !important;
+}
+
+/* --------------------------------------------------------------------------
+   4. Form Inputs, Selects & Textareas in Light Mode (#F3F6FB with border #C4D2E4, Slate Text #0F172A)
+   -------------------------------------------------------------------------- */
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):not([data-tour="add-ticket-btn"]),
+html.light input:not([type="checkbox"]):not([type="radio"]):not([data-tour="add-ticket-btn"]),
+html:not(.dark) select,
+html.light select,
+html:not(.dark) textarea:not(.bg-transparent),
+html.light textarea:not(.bg-transparent) {
+  background-color: #F3F6FB !important;
+  border-color: #C4D2E4 !important;
+  color: #0F172A !important;
+}
+
+html:not(.dark) select option,
+html.light select option {
+  background-color: #F0F4FA !important;
+  color: #0F172A !important;
+}
+
+/* Search input in header trigger button */
+html:not(.dark) header button[aria-label="Search workspace"],
+html.light header button[aria-label="Search workspace"] {
+  background-color: #F3F6FB !important;
+  border-color: #C4D2E4 !important;
+  color: #475569 !important;
+}
+
+html:not(.dark) header button[aria-label="Search workspace"]:hover,
+html.light header button[aria-label="Search workspace"]:hover {
+  background-color: #D6E4F7 !important;
+  border-color: #ADC8EC !important;
+  color: #1E3A8A !important;
+}
+
+/* Focused Inputs (#F8FAFD with #2563EB border ring) */
+html:not(.dark) input:not([type="checkbox"]):not([type="radio"]):focus,
+html.light input:not([type="checkbox"]):not([type="radio"]):focus,
+html:not(.dark) select:focus,
+html.light select:focus,
+html:not(.dark) textarea:not(.bg-transparent):focus,
+html.light textarea:not(.bg-transparent):focus {
+  background-color: #F8FAFD !important;
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.25) !important;
+  outline: none !important;
+}
+
+/* --------------------------------------------------------------------------
+   5. Surface Dividers & Borders (#C8D5E6)
+   -------------------------------------------------------------------------- */
+html:not(.dark) .border-slate-200,
+html.light .border-slate-200,
+html:not(.dark) .border-slate-200\/80,
+html.light .border-slate-200\/80,
+html:not(.dark) .border-slate-200\/90,
+html.light .border-slate-200\/90,
+html:not(.dark) .border-slate-300,
+html.light .border-slate-300,
+html:not(.dark) .border-gray-200,
+html.light .border-gray-200,
+html:not(.dark) .border-zinc-200,
+html.light .border-zinc-200,
+html:not(.dark) .border-zinc-800,
+html.light .border-zinc-800,
+html:not(.dark) .border-zinc-800\/90,
+html.light .border-zinc-800\/90,
+html:not(.dark) .border-zinc-800\/80,
+html.light .border-zinc-800\/80,
+html:not(.dark) .border-zinc-800\/70,
+html.light .border-zinc-800\/70,
+html:not(.dark) .border-zinc-800\/60,
+html.light .border-zinc-800\/60,
+html:not(.dark) .border-zinc-700,
+html.light .border-zinc-700,
+html:not(.dark) .border-zinc-700\/80,
+html.light .border-zinc-700\/80,
+html:not(.dark) .border-zinc-700\/60,
+html.light .border-zinc-700\/60,
+html:not(.dark) .border-white\/10,
+html.light .border-white\/10,
+html:not(.dark) .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-slate-200 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-zinc-800 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-zinc-800\/80 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-zinc-800\/80 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-zinc-800\/60 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-zinc-800\/60 > :not([hidden]) ~ :not([hidden]),
+html:not(.dark) .divide-zinc-800\/50 > :not([hidden]) ~ :not([hidden]),
+html.light .divide-zinc-800\/50 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #C8D5E6 !important;
+}
+
+/* --------------------------------------------------------------------------
+   6. High-Contrast Ergonomic Typography Hierarchy in Light Mode
+   -------------------------------------------------------------------------- */
+/* Primary Headings, Titles, User Names, Task Keys: Deep Navy #0F172A */
+html:not(.dark) h1, html.light h1,
+html:not(.dark) h2, html.light h2,
+html:not(.dark) h3, html.light h3,
+html:not(.dark) h4, html.light h4,
+html:not(.dark) .text-zinc-900, html.light .text-zinc-900,
+html:not(.dark) .text-zinc-800, html.light .text-zinc-800,
+html:not(.dark) .text-zinc-100, html.light .text-zinc-100,
+html:not(.dark) .text-slate-900, html.light .text-slate-900 {
+  color: #0F172A !important;
+}
+
+/* Body Text, Form Inputs, Selected Dropdown Values: Crisp Deep Navy/Slate #0F172A */
+html:not(.dark) .text-zinc-200, html.light .text-zinc-200,
+html:not(.dark) .text-slate-800, html.light .text-slate-800,
+html:not(.dark) .text-slate-200, html.light .text-slate-200 {
+  color: #0F172A !important;
+}
+
+/* Form Labels & Section Headers: Medium Blue-Slate #334155 */
+html:not(.dark) .text-zinc-700, html.light .text-zinc-700,
+html:not(.dark) .text-zinc-600, html.light .text-zinc-600,
+html:not(.dark) .text-zinc-300, html.light .text-zinc-300,
+html:not(.dark) .text-slate-700, html.light .text-slate-700,
+html:not(.dark) .text-slate-600, html.light .text-slate-600,
+html:not(.dark) .text-slate-300, html.light .text-slate-300 {
+  color: #334155 !important;
+}
+
+/* Secondary / Helper Text: #475569 / #64748B */
+html:not(.dark) .text-zinc-500, html.light .text-zinc-500,
+html:not(.dark) .text-zinc-400, html.light .text-zinc-400,
+html:not(.dark) .text-slate-500, html.light .text-slate-500,
+html:not(.dark) .text-slate-400, html.light .text-slate-400,
+html:not(.dark) ::placeholder, html.light ::placeholder {
+  color: #475569 !important;
+}
+
+/* Preserve White Text Inside Colored Primary Buttons & Badges */
+html:not(.dark) .bg-blue-600, html.light .bg-blue-600,
+html:not(.dark) .bg-blue-600 *, html.light .bg-blue-600 *,
+html:not(.dark) .bg-blue-500, html.light .bg-blue-500,
+html:not(.dark) .bg-blue-500 *, html.light .bg-blue-500 *,
+html:not(.dark) .bg-emerald-600, html.light .bg-emerald-600,
+html:not(.dark) .bg-emerald-600 *, html.light .bg-emerald-600 *,
+html:not(.dark) .bg-rose-600, html.light .bg-rose-600,
+html:not(.dark) .bg-rose-600 *, html.light .bg-rose-600 *,
+html:not(.dark) .bg-red-600, html.light .bg-red-600,
+html:not(.dark) .bg-red-600 *, html.light .bg-red-600 *,
+html:not(.dark) .bg-indigo-600, html.light .bg-indigo-600,
+html:not(.dark) .bg-indigo-600 *, html.light .bg-indigo-600 *,
+html:not(.dark) .bg-purple-600, html.light .bg-purple-600,
+html:not(.dark) .bg-purple-600 *, html.light .bg-purple-600 * {
+  color: #FFFFFF !important;
+}
+
+/* --------------------------------------------------------------------------
+   7. Primary & Secondary CTA Buttons in Light Mode
+   -------------------------------------------------------------------------- */
+/* Primary "+ Add Ticket" CTA: Royal Blue #2563EB fill with crisp #FFFFFF text */
+html:not(.dark) button[data-tour="add-ticket-btn"],
+html.light button[data-tour="add-ticket-btn"] {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border: 1px solid #1D4ED8 !important;
+  box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25) !important;
+}
+
+html:not(.dark) button[data-tour="add-ticket-btn"]:hover,
+html.light button[data-tour="add-ticket-btn"]:hover {
+  background-color: #1D4ED8 !important;
+  color: #FFFFFF !important;
+}
+
+html:not(.dark) button[data-tour="add-ticket-btn"] *,
+html.light button[data-tour="add-ticket-btn"] * {
+  color: #FFFFFF !important;
+}
+
+/* Executive "Generate AI Report" CTA: Soft muted teal-blue */
+html:not(.dark) header button:has(.lucide-sparkles),
+html.light header button:has(.lucide-sparkles) {
+  background-color: #D2E4E4 !important;
+  color: #0F5257 !important;
+  border: 1px solid #B0D2D2 !important;
+}
+
+html:not(.dark) header button:has(.lucide-sparkles):hover,
+html.light header button:has(.lucide-sparkles):hover {
+  background-color: #C0DBDB !important;
+}
+
+html:not(.dark) header button:has(.lucide-sparkles) *,
+html.light header button:has(.lucide-sparkles) * {
+  color: #0F5257 !important;
+}
+
+/* --------------------------------------------------------------------------
+   8. Status, Priority & Department Badges in Light Mode (Muted Ergonomic Pills)
+   -------------------------------------------------------------------------- */
+html:not(.dark) .bg-blue-100, html.light .bg-blue-100,
+html:not(.dark) .bg-blue-50, html.light .bg-blue-50,
+html:not(.dark) .bg-blue-950, html.light .bg-blue-950,
+html:not(.dark) .bg-blue-950\/80, html.light .bg-blue-950\/80,
+html:not(.dark) .bg-blue-950\/60, html.light .bg-blue-950\/60 {
+  background-color: #DFECFA !important;
+  color: #1D4ED8 !important;
+  border-color: #B9D3F3 !important;
+}
+
+html:not(.dark) .bg-amber-100, html.light .bg-amber-100,
+html:not(.dark) .bg-amber-50, html.light .bg-amber-50,
+html:not(.dark) .bg-amber-950, html.light .bg-amber-950,
+html:not(.dark) .bg-amber-950\/80, html.light .bg-amber-950\/80,
+html:not(.dark) .bg-amber-950\/60, html.light .bg-amber-950\/60 {
+  background-color: #FEF3E2 !important;
+  color: #B45309 !important;
+  border-color: #FCD8A5 !important;
+}
+
+html:not(.dark) .bg-emerald-100, html.light .bg-emerald-100,
+html:not(.dark) .bg-emerald-50, html.light .bg-emerald-50,
+html:not(.dark) .bg-emerald-950, html.light .bg-emerald-950,
+html:not(.dark) .bg-emerald-950\/80, html.light .bg-emerald-950\/80,
+html:not(.dark) .bg-emerald-950\/70, html.light .bg-emerald-950\/70,
+html:not(.dark) .bg-emerald-950\/60, html.light .bg-emerald-950\/60,
+html:not(.dark) .bg-emerald-950\/50, html.light .bg-emerald-950\/50 {
+  background-color: #E1F4E9 !important;
+  color: #065F46 !important;
+  border-color: #B2E5C5 !important;
+}
+
+html:not(.dark) .bg-red-100, html.light .bg-red-100,
+html:not(.dark) .bg-red-50, html.light .bg-red-50,
+html:not(.dark) .bg-red-950, html.light .bg-red-950,
+html:not(.dark) .bg-red-950\/80, html.light .bg-red-950\/80,
+html:not(.dark) .bg-red-950\/60, html.light .bg-red-950\/60,
+html:not(.dark) .bg-rose-100, html.light .bg-rose-100,
+html:not(.dark) .bg-rose-50, html.light .bg-rose-50,
+html:not(.dark) .bg-rose-950\/60, html.light .bg-rose-950\/60 {
+  background-color: #F9E8EC !important;
+  color: #BE123C !important;
+  border-color: #F1C4D0 !important;
+}
+
+html:not(.dark) .bg-purple-100, html.light .bg-purple-100,
+html:not(.dark) .bg-purple-50, html.light .bg-purple-50,
+html:not(.dark) .bg-purple-950, html.light .bg-purple-950,
+html:not(.dark) .bg-purple-950\/80, html.light .bg-purple-950\/80,
+html:not(.dark) .bg-indigo-950\/60, html.light .bg-indigo-950\/60,
+html:not(.dark) .bg-indigo-950\/50, html.light .bg-indigo-950\/50 {
+  background-color: #EFEAF8 !important;
+  color: #6D28D9 !important;
+  border-color: #D3C4ED !important;
+}
+
+
